@@ -2,6 +2,7 @@
   "name": "pii-freely",
   "version": "0.1.0",
   "description": "Local PII redaction module using Desert Ant's on-device redact model",
+  "license": "Apache-2.0",
   "type": "module",
   "main": "index.js",
   "bin": {

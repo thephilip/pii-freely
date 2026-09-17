@@ -1,23 +1,34 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+REPO="thephilip/pii-freely"
+BRANCH="main"
 INSTALL_DIR="${PII_FREELY_HOME:-$HOME/.pii-freely}"
+TARBALL="https://github.com/$REPO/archive/refs/heads/$BRANCH.tar.gz"
+
+command -v node >/dev/null 2>&1 || { echo "Error: Node.js is required but not installed."; exit 1; }
+command -v npm >/dev/null 2>&1 || { echo "Error: npm is required but not installed."; exit 1; }
 
 echo "Installing pii-freely to $INSTALL_DIR"
 
-if [ -d "$INSTALL_DIR" ]; then
-  echo "Updating existing installation..."
-else
-  mkdir -p "$INSTALL_DIR"
-fi
+TMPDIR="$(mktemp -d)"
+trap 'rm -rf "$TMPDIR"' EXIT
 
-cp package.json index.js cli.js infra-patterns.js refiners.js config.default.json "$INSTALL_DIR/"
-cp -r profiles "$INSTALL_DIR/"
+curl -fsSL "$TARBALL" | tar -xz -C "$TMPDIR" --strip-components=1
+
+mkdir -p "$INSTALL_DIR/profiles"
+for f in package.json package-lock.json index.js cli.js infra-patterns.js refiners.js config.default.json warmup.js; do
+  cp "$TMPDIR/$f" "$INSTALL_DIR/"
+done
+cp "$TMPDIR"/profiles/*.json "$INSTALL_DIR/profiles/"
 
 cd "$INSTALL_DIR"
-npm install --production 2>&1
+npm install --omit=dev 2>&1
 
 chmod +x "$INSTALL_DIR/cli.js"
+
+echo "Downloading model weights..."
+node "$INSTALL_DIR/warmup.js" 2>&1
 
 SHELL_NAME="$(basename "$SHELL")"
 case "$SHELL_NAME" in
