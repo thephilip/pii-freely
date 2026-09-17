@@ -30,29 +30,16 @@ chmod +x "$INSTALL_DIR/cli.js"
 echo "Downloading model weights..."
 node "$INSTALL_DIR/warmup.js" 2>&1
 
-SHELL_NAME="$(basename "$SHELL")"
-case "$SHELL_NAME" in
-  zsh)  RC_FILE="$HOME/.zshrc" ;;
-  bash) RC_FILE="$HOME/.bashrc" ;;
-  *)    RC_FILE="" ;;
-esac
+BIN_DIR="$HOME/.local/bin"
+mkdir -p "$BIN_DIR"
+ln -sf "$INSTALL_DIR/cli.js" "$BIN_DIR/pfree"
 
-ALIAS_LINE="alias pfree='node $INSTALL_DIR/cli.js'"
-
-if [ -n "$RC_FILE" ]; then
-  if ! grep -qF "pfree" "$RC_FILE" 2>/dev/null; then
-    echo "" >> "$RC_FILE"
-    echo "# pii-freely" >> "$RC_FILE"
-    echo "$ALIAS_LINE" >> "$RC_FILE"
-    echo "Added alias to $RC_FILE. Run: source $RC_FILE"
-  else
-    echo "Alias already exists in $RC_FILE"
-  fi
-else
-  echo "Add this alias to your shell config:"
-  echo "  $ALIAS_LINE"
+if ! echo "$PATH" | tr ':' '\n' | grep -qx "$BIN_DIR"; then
+  echo ""
+  echo "Note: $BIN_DIR is not in your PATH."
+  echo "Add it with:  export PATH=\"\$HOME/.local/bin:\$PATH\""
 fi
 
 echo ""
 echo "Installed. Test with:"
-echo "  echo 'test@example.com' | pfree redact"
+echo "  pfree redact <<< 'test@example.com'"
