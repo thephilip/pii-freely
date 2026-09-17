@@ -1,0 +1,19 @@
+{
+  "name": "pii-freely",
+  "version": "0.1.0",
+  "description": "Local PII redaction module using Desert Ant's on-device redact model",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "pfree": "./cli.js"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "@desert-ant-labs/redact": "^3.1.0"
+  },
+  "allowScripts": {
+    "koffi@2.16.3": true
+  }
+}
