@@ -7,11 +7,16 @@ Redaction is reversible. Mask data before sending text to an LLM or external ser
 ## Install
 
 ```bash
-git clone <repo-url> pii-freely && cd pii-freely
-bash install.sh
+curl -fsSL https://raw.githubusercontent.com/thephilip/pii-freely/main/install.sh | bash
 ```
 
-This installs to `~/.pii-freely` and adds a shell alias. Override the install location with `PII_FREELY_HOME`.
+Or with a custom install location:
+
+```bash
+PII_FREELY_HOME=/opt/pii-freely curl -fsSL https://raw.githubusercontent.com/thephilip/pii-freely/main/install.sh | bash
+```
+
+This installs to `~/.pii-freely` and adds a `pfree` shell alias.
 
 Requires Node.js 18+.
 
