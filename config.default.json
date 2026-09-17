@@ -1,0 +1,49 @@
+{
+  "model": {
+    "EMAIL": { "corporate": true, "personal": true },
+    "PHONE": true,
+    "SSN": true,
+    "CREDIT_CARD": true,
+    "GIVEN_NAME": true,
+    "SURNAME": true,
+    "STREET_NAME": true,
+    "BUILDING_NUMBER": true,
+    "SECONDARY_ADDRESS": true,
+    "CITY": true,
+    "STATE": true,
+    "ZIP_CODE": true,
+    "GOVERNMENT_ID": true,
+    "DRIVERS_LICENSE": true,
+    "PASSPORT": true,
+    "TAX_ID": true,
+    "BANK_ACCOUNT": true,
+    "ROUTING_NUMBER": true,
+    "IP_ADDRESS": { "public": true, "private": false },
+    "URL": { "internal": false, "external": false }
+  },
+  "infra": {
+    "CLUSTER_ID": true,
+    "AWS_ACCOUNT_ID": true,
+    "PUBLIC_IPV4": true,
+    "PUBLIC_IPV6": true,
+    "FQDN": { "internal": false, "external": true },
+    "ARN": true,
+    "S3_BUCKET": true,
+    "OAUTH_TOKEN": true,
+    "SUBSCRIPTION_ID": true
+  },
+  "minimumConfidence": 0.6,
+  "internalDomains": [
+    "redhat.com",
+    "corp.redhat.com",
+    "devshift.net",
+    "rhcloud.com",
+    "openshiftapps.com",
+    "openshift.com",
+    "access.redhat.com"
+  ],
+  "corporateDomains": [
+    "redhat.com",
+    "corp.redhat.com"
+  ]
+}

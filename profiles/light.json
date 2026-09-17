@@ -1,0 +1,36 @@
+{
+  "model": {
+    "EMAIL": { "corporate": false, "personal": true },
+    "PHONE": false,
+    "SSN": true,
+    "CREDIT_CARD": true,
+    "GIVEN_NAME": false,
+    "SURNAME": false,
+    "STREET_NAME": false,
+    "BUILDING_NUMBER": false,
+    "SECONDARY_ADDRESS": false,
+    "CITY": false,
+    "STATE": false,
+    "ZIP_CODE": false,
+    "GOVERNMENT_ID": true,
+    "DRIVERS_LICENSE": true,
+    "PASSPORT": true,
+    "TAX_ID": true,
+    "BANK_ACCOUNT": true,
+    "ROUTING_NUMBER": true,
+    "IP_ADDRESS": { "public": false, "private": false },
+    "URL": false
+  },
+  "infra": {
+    "CLUSTER_ID": false,
+    "AWS_ACCOUNT_ID": false,
+    "PUBLIC_IPV4": false,
+    "PUBLIC_IPV6": false,
+    "FQDN": false,
+    "ARN": false,
+    "S3_BUCKET": false,
+    "OAUTH_TOKEN": true,
+    "SUBSCRIPTION_ID": false
+  },
+  "minimumConfidence": 0.7
+}
