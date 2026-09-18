@@ -52,6 +52,19 @@ const PATTERNS = {
       return /subscription|sub.?id|org.?id/i.test(before);
     },
   },
+  PEM_BLOCK: {
+    regex: /-----BEGIN [A-Z0-9 ]+-----[\s\S]*?-----END [A-Z0-9 ]+-----/g,
+    label: "PEM_BLOCK",
+  },
+  BASE64_DATA: {
+    regex: /[A-Za-z0-9+/]{40,}={0,2}/g,
+    label: "BASE64_DATA",
+    validate: (match, context) => {
+      const idx = context.indexOf(match);
+      const before = context.slice(Math.max(0, idx - 80), idx);
+      return /base64|data|certificate|tls\.crt|tls\.key|ca\.crt|ca-bundle|secret|token|credential|-----BEGIN/i.test(before);
+    },
+  },
 };
 
 export function runInfraPatterns(text, enabledCategories) {

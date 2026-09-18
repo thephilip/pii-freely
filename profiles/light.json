@@ -30,7 +30,9 @@
     "ARN": false,
     "S3_BUCKET": false,
     "OAUTH_TOKEN": true,
-    "SUBSCRIPTION_ID": false
+    "SUBSCRIPTION_ID": false,
+    "PEM_BLOCK": true,
+    "BASE64_DATA": true
   },
   "minimumConfidence": 0.7
 }

@@ -30,7 +30,9 @@
     "ARN": true,
     "S3_BUCKET": true,
     "OAUTH_TOKEN": true,
-    "SUBSCRIPTION_ID": true
+    "SUBSCRIPTION_ID": true,
+    "PEM_BLOCK": true,
+    "BASE64_DATA": true
   },
   "minimumConfidence": 0.6,
   "internalDomains": [
