@@ -96,6 +96,8 @@ Deterministic patterns for cloud and cluster identifiers:
 | `S3_BUCKET` | S3 URIs |
 | `OAUTH_TOKEN` | `sha256~` bearer tokens |
 | `SUBSCRIPTION_ID` | subscription/org IDs near keyword context |
+| `PEM_BLOCK` | PEM-encoded certificates and private keys |
+| `BASE64_DATA` | base64 blobs near cert/secret/credential context |
 
 ## Configuration
 
