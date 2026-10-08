@@ -36,17 +36,7 @@
   },
   "mergeNames": true,
   "minimumConfidence": 0.6,
-  "internalDomains": [
-    "example.com",
-    "corp.example.com",
-    "example-dev.net",
-    "example-cloud.com",
-    "example-apps.com",
-    "example-platform.com",
-    "access.example.com"
-  ],
-  "corporateDomains": [
-    "example.com",
-    "corp.example.com"
-  ]
+  "hostDomains": [],
+  "internalDomains": [],
+  "corporateDomains": []
 }

@@ -11,22 +11,12 @@ const PRIVATE_IP_RANGES = [
   /^::$/,
 ];
 
-const DEFAULT_INTERNAL_DOMAINS = [
-  "example.com",
-  "corp.example.com",
-  "example-dev.net",
-  "example-cloud.com",
-  "example-apps.com",
-  "example-platform.com",
-  "access.example.com",
-];
-
 function isPrivateIP(value) {
   return PRIVATE_IP_RANGES.some((re) => re.test(value));
 }
 
 function isInternalDomain(value, internalDomains) {
-  const domains = internalDomains || DEFAULT_INTERNAL_DOMAINS;
+  const domains = internalDomains || [];
   const lower = value.toLowerCase();
   return domains.some((d) => lower === d || lower.endsWith("." + d));
 }
@@ -43,7 +33,7 @@ function extractDomain(value) {
 function isCorporateEmail(value, corporateDomains) {
   const domain = value.split("@")[1]?.toLowerCase();
   if (!domain) return false;
-  const domains = corporateDomains || DEFAULT_INTERNAL_DOMAINS;
+  const domains = corporateDomains || [];
   return domains.some((d) => domain === d || domain.endsWith("." + d));
 }
 

@@ -10,13 +10,15 @@ Springfield, IL 62704. SSN on file: 123-45-6789.
 Credit card ending in 4242-4242-4242-4242 was flagged.
 
 Cluster ID: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-API endpoint: api.my-cluster.p1.example-apps.com
+API endpoint: api.my-cluster.cloud.example.net
 Public IP: 54.231.10.99
 Internal IP: 10.0.1.50
 ARN: arn:aws:iam::123456789012:role/my-role
 Token: sha256~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij
 S3: s3://my-customer-bucket
 `;
+
+const names = "Jane Doe (jane@gmail.com) emailed John Smith.";
 
 function withNames() {
   const config = loadConfig();
@@ -41,17 +43,17 @@ test("default config round-trips, keeps private IPs and names", async () => {
 });
 
 test("adjacent name parts merge into one PERSON", async () => {
-  const result = await redact(sample, { config: withNames() });
-  assert.ok(result.redacted.includes("Customer [PERSON_1] ("));
-  assert.equal(result.mapping["[PERSON_1]"], "John Smith");
+  const result = await redact(names, { config: withNames() });
+  assert.equal(result.redacted, "[PERSON_1] ([EMAIL_1]) emailed [PERSON_2].");
+  assert.equal(result.mapping["[PERSON_2]"], "John Smith");
   assert.ok(!result.items.some((i) => i.label === "GIVEN_NAME" || i.label === "SURNAME"));
 });
 
 test("mergeNames: false keeps separate name parts", async () => {
   const config = withNames();
   config.mergeNames = false;
-  const result = await redact(sample, { config });
-  assert.ok(result.redacted.includes("[GIVEN_NAME_1] [SURNAME_1]"));
+  const result = await redact(names, { config });
+  assert.equal(result.redacted, "[GIVEN_NAME_1] [SURNAME_1] ([EMAIL_1]) emailed [GIVEN_NAME_2] [SURNAME_2].");
 });
 
 test("repeated values share one placeholder", async () => {
@@ -112,6 +114,16 @@ test("vault round-trips and rejects the wrong key", () => {
   assert.ok(!JSON.stringify(vault).includes("user@example.com"));
   assert.deepEqual(decryptMapping(vault, "correct horse"), mapping);
   assert.throws(() => decryptMapping(vault, "wrong"), /wrong key/);
+});
+
+test("FQDN only matches configured hostDomains", async () => {
+  const config = infraOnly();
+  const text = "Hosts api.prod.example.net, example.net and notexample.net";
+  assert.equal((await redact(text, { config })).redacted, text);
+
+  config.hostDomains = ["example.net"];
+  config.infra.FQDN = true;
+  assert.equal((await redact(text, { config })).redacted, "Hosts [FQDN_1], [FQDN_2] and notexample.net");
 });
 
 test("profiles still load and round-trip", async () => {

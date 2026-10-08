@@ -141,7 +141,7 @@ Deterministic patterns for cloud and cluster identifiers:
 | `CLUSTER_ID` | UUIDs |
 | `AWS_ACCOUNT_ID` | 12-digit numbers near AWS context |
 | `PUBLIC_IPV4` / `PUBLIC_IPV6` | public IP addresses (skips RFC 1918) |
-| `FQDN` | platform hostnames |
+| `FQDN` | hostnames at or under the domains in `hostDomains` (none by default) |
 | `ARN` | AWS resource names |
 | `S3_BUCKET` | S3 URIs |
 | `OAUTH_TOKEN` | `sha256~` bearer tokens |
@@ -170,7 +170,8 @@ Every category accepts either a simple boolean or granular sub-options:
   },
   "mergeNames": true,
   "minimumConfidence": 0.6,
-  "internalDomains": ["example.com", "corp.example.com"],
+  "hostDomains": ["internal.example.com"],
+  "internalDomains": ["example.com"],
   "corporateDomains": ["example.com"]
 }
 ```
@@ -183,6 +184,13 @@ Every category accepts either a simple boolean or granular sub-options:
 | `EMAIL` | `corporate` / `personal` | matched against `corporateDomains` |
 | `URL` | `internal` / `external` | matched against `internalDomains` |
 | `FQDN` | `internal` / `external` | matched against `internalDomains` |
+
+`hostDomains`, `internalDomains` and `corporateDomains` are empty by default; fill them in with
+your own organization's domains:
+
+- `hostDomains`: hostnames at or under these domains are detected as `FQDN`
+- `internalDomains`: decides `internal` vs `external` for `URL` and `FQDN`
+- `corporateDomains`: decides `corporate` vs `personal` for `EMAIL`
 
 Categories without a refiner ignore sub-option keys and redact if any value is `true`.
 

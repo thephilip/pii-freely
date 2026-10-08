@@ -32,10 +32,6 @@ const PATTERNS = {
     label: "PUBLIC_IPV6",
     validate: (match) => !match.startsWith("fe80") && !match.startsWith("::1") && match !== "::",
   },
-  FQDN: {
-    regex: /\b(?:api|console|oauth|apps)[\w.-]*\.(?:example-apps\.com|example-dev\.net|example-cloud\.com|example-platform\.com)\b/gi,
-    label: "FQDN",
-  },
   S3_BUCKET: {
     regex: /\bs3:\/\/[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]\b/gi,
     label: "S3_BUCKET",
@@ -66,12 +62,25 @@ const PATTERNS = {
   },
 };
 
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Hostnames at or under any of the configured domains.
+function fqdnPattern(hostDomains) {
+  const domains = hostDomains.map(escapeRegex).join("|");
+  return {
+    regex: new RegExp(`\\b(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)*(?:${domains})\\b`, "gi"),
+    label: "FQDN",
+  };
+}
+
 // Every match of every enabled pattern, as spans over the original text.
 // Matches may overlap; the caller decides which span wins.
-export function findInfraMatches(text, enabledCategories) {
+export function findInfraMatches(text, enabledCategories, { hostDomains = [] } = {}) {
   const matches = [];
+  const patterns = { ...PATTERNS };
+  if (hostDomains.length > 0) patterns.FQDN = fqdnPattern(hostDomains);
 
-  for (const [key, pattern] of Object.entries(PATTERNS)) {
+  for (const [key, pattern] of Object.entries(patterns)) {
     if (!enabledCategories[key]) continue;
 
     const re = new RegExp(pattern.regex.source, pattern.regex.flags);

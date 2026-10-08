@@ -46,6 +46,7 @@ export function loadConfig(configPath) {
     if (overrides.minimumConfidence !== undefined) base.minimumConfidence = overrides.minimumConfidence;
     if (overrides.internalDomains) base.internalDomains = overrides.internalDomains;
     if (overrides.corporateDomains) base.corporateDomains = overrides.corporateDomains;
+    if (overrides.hostDomains) base.hostDomains = overrides.hostDomains;
     if (overrides.mergeNames !== undefined) base.mergeNames = overrides.mergeNames;
   }
 
@@ -187,7 +188,7 @@ async function detect(text, config) {
   for (const [k, v] of Object.entries(config.infra)) {
     infraEnabled[k] = isEnabled(v);
   }
-  for (const match of findInfraMatches(text, infraEnabled)) {
+  for (const match of findInfraMatches(text, infraEnabled, { hostDomains: config.hostDomains })) {
     if (shouldRedact(match.label, match.original, config.infra[match.label], config)) {
       spans.push({ ...match, confidence: 1.0, source: "infra" });
     }
