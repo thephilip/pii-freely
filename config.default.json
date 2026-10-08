@@ -4,8 +4,8 @@
     "PHONE": true,
     "SSN": true,
     "CREDIT_CARD": true,
-    "GIVEN_NAME": true,
-    "SURNAME": true,
+    "GIVEN_NAME": false,
+    "SURNAME": false,
     "STREET_NAME": true,
     "BUILDING_NUMBER": true,
     "SECONDARY_ADDRESS": true,
@@ -34,6 +34,7 @@
     "PEM_BLOCK": true,
     "BASE64_DATA": true
   },
+  "mergeNames": true,
   "minimumConfidence": 0.6,
   "internalDomains": [
     "example.com",

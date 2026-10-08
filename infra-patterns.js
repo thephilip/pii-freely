@@ -10,8 +10,8 @@ const PATTERNS = {
   AWS_ACCOUNT_ID: {
     regex: /\b\d{12}\b/g,
     label: "AWS_ACCOUNT_ID",
-    validate: (match, context) => {
-      const before = context.slice(Math.max(0, context.indexOf(match) - 40), context.indexOf(match));
+    validate: (match, context, index) => {
+      const before = context.slice(Math.max(0, index - 40), index);
       return /account|aws|arn/i.test(before);
     },
   },
@@ -47,8 +47,8 @@ const PATTERNS = {
   SUBSCRIPTION_ID: {
     regex: /\b[0-9a-zA-Z]{24,28}\b/g,
     label: "SUBSCRIPTION_ID",
-    validate: (match, context) => {
-      const before = context.slice(Math.max(0, context.indexOf(match) - 40), context.indexOf(match));
+    validate: (match, context, index) => {
+      const before = context.slice(Math.max(0, index - 40), index);
       return /subscription|sub.?id|org.?id/i.test(before);
     },
   },
@@ -59,41 +59,32 @@ const PATTERNS = {
   BASE64_DATA: {
     regex: /[A-Za-z0-9+/]{40,}={0,2}/g,
     label: "BASE64_DATA",
-    validate: (match, context) => {
-      const idx = context.indexOf(match);
-      const before = context.slice(Math.max(0, idx - 80), idx);
+    validate: (match, context, index) => {
+      const before = context.slice(Math.max(0, index - 80), index);
       return /base64|data|certificate|tls\.crt|tls\.key|ca\.crt|ca-bundle|secret|token|credential|-----BEGIN/i.test(before);
     },
   },
 };
 
-export function runInfraPatterns(text, enabledCategories) {
-  const items = [];
-  const counters = {};
-  let result = text;
+// Every match of every enabled pattern, as spans over the original text.
+// Matches may overlap; the caller decides which span wins.
+export function findInfraMatches(text, enabledCategories) {
+  const matches = [];
 
   for (const [key, pattern] of Object.entries(PATTERNS)) {
     if (!enabledCategories[key]) continue;
 
-    counters[key] = counters[key] || 0;
-    const matches = [];
-
-    let m;
     const re = new RegExp(pattern.regex.source, pattern.regex.flags);
-    while ((m = re.exec(result)) !== null) {
-      const val = m[0];
-      if (pattern.validate && !pattern.validate(val, result)) continue;
-      if (matches.includes(val)) continue;
-      matches.push(val);
-    }
-
-    for (const val of matches) {
-      counters[key]++;
-      const placeholder = `[${pattern.label}_${counters[key]}]`;
-      items.push({ label: pattern.label, original: val, placeholder });
-      result = result.replaceAll(val, placeholder);
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      if (m[0].length === 0) {
+        re.lastIndex++;
+        continue;
+      }
+      if (pattern.validate && !pattern.validate(m[0], text, m.index)) continue;
+      matches.push({ label: pattern.label, original: m[0], start: m.index, end: m.index + m[0].length });
     }
   }
 
-  return { text: result, items };
+  return matches;
 }
