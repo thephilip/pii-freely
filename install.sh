@@ -17,9 +17,8 @@ trap 'rm -rf "$TMPDIR"' EXIT
 curl -fsSL "$TARBALL" | tar -xz -C "$TMPDIR" --strip-components=1
 
 mkdir -p "$INSTALL_DIR/profiles"
-for f in package.json package-lock.json index.js cli.js infra-patterns.js refiners.js config.default.json warmup.js; do
-  cp "$TMPDIR/$f" "$INSTALL_DIR/"
-done
+cp "$TMPDIR"/*.js "$TMPDIR"/*.json "$INSTALL_DIR/"
+rm -f "$INSTALL_DIR/test.js"
 cp "$TMPDIR"/profiles/*.json "$INSTALL_DIR/profiles/"
 
 cd "$INSTALL_DIR"
