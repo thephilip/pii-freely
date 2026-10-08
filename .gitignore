@@ -1,2 +1,12 @@
 node_modules/
+
+# Real PII: mappings and vaults
 *.mapping.json
+map.json
+*.vault
+
+# Local tool state
+.claude/
+.gsd/
+.bg-shell/
+.mcp.json
